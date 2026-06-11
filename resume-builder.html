@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resume Builder Pro – Arun</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+
+<style>
+/* ========== GLOBAL ========== */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0a0f1e;
+  color: #e2e8f0;
+  min-height: 100vh;
+}
+
+/* ========== ANIMATED GRADIENT BG ========== */
+.hero-bg {
+  background: linear-gradient(135deg, #0a0f1e 0%, #0d1b3e 50%, #0a0f1e 100%);
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg::before {
+  content: '';
+  position: fixed;
+  top: -40%;
+  left: -20%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  animation: drift 12s ease-in-out infinite alternate;
+}
+.hero-bg::after {
+  content: '';
+  position: fixed;
+  bottom: -30%;
+  right: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%);
+  pointer-events: none;
+  animation: drift 15s ease-in-out infinite alternate-reverse;
+}
+@keyframes drift { to { transform: translate(5%, 5%); } }
+
+/* ========== HEADER ========== */
+.top-bar {
+  background: rgba(10,15,30,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(59,130,246,0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo-text {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ========== PROGRESS BAR ========== */
+.progress-bar-outer {
+  background: rgba(255,255,255,0.08);
+  border-radius: 99px;
+  height: 8px;
+  overflow: hidden;
+}
+.progress-bar-inner {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #3b82f6, #a78bfa);
+  transition: width 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+/* ========== STEP TABS ========== */
+.step-tab {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+.step-tab.active {
+  background: linear-gradient(135deg,#1e40af,#7c3aed);
+  border-color: #60a5fa;
+  color: #fff;
+}
+.step-tab.done {
+  border-color: #22c55e44;
+  color: #4ade80;
+}
+.step-tab.inactive {
+  border-color: rgba(255,255,255,0.08);
+  color: #64748b;
+}
+
+/* ========== CARD ========== */
+.glass-card {
+  background: rgba(15,23,42,0.7);
+  border: 1px solid rgba(59,130,246,0.18);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s;
+}
+.glass-card:focus-within {
+  border-color: rgba(99,102,241,0.5);
+}
+
+/* ========== INPUTS ========== */
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #e2e8f0;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.form-input::placeholder { color: #475569; }
+.form-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 5px;
+}
+
+/* ========== BUTTONS ========== */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s, transform 0.15s;
+  box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-secondary {
+  background: transparent;
+  color: #94a3b8;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: #60a5fa; color: #60a5fa; }
+.btn-add {
+  background: transparent;
+  color: #60a5fa;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1.5px dashed rgba(96,165,250,0.4);
+  border-radius: 8px;
+  padding: 6px 14px;
+  transition: all 0.2s;
+}
+.btn-add:hover { background: rgba(96,165,250,0.08); border-color: #60a5fa; }
+.btn-remove {
+  background: transparent;
+  color: #f87171;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.btn-remove:hover { background: rgba(248,113,113,0.12); }
+
+/* ========== SECTION BLOCK ========== */
+.section-block {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+/* ========== TEMPLATE CARDS ========== */
+.template-card {
+  border: 2.5px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+.template-card:hover { border-color: #60a5fa44; transform: translateY(-2px); }
+.template-card.selected { border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,0.15); }
+
+/* ========== ATS METER ========== */
+.ats-ring-svg { transform: rotate(-90deg); }
+.ats-score-num {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+}
+
+/* ========== RESUME PREVIEW ========== */
+#resumePreview {
+  background: #ffffff;
+  color: #1a1a2e;
+  font-family: 'Georgia', serif;
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 1000px;
+  position: relative;
+}
+#resumePreview.template-modern { font-family: 'Inter', sans-serif; }
+#resumePreview.template-classic { font-family: 'Georgia', serif; }
+#resumePreview.template-minimal { font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+/* ========== MODAL ========== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-box {
+  background: #0f172a;
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: 20px;
+  padding: 32px;
+  width: min(400px, 92vw);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+  animation: popIn 0.25s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ========== SECTION STEPPER DOT ========== */
+.dot-done { background: #22c55e; }
+.dot-active { background: #6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,0.2); }
+.dot-idle { background: #334155; }
+
+/* ========== PRINT ========== */
+@media print {
+  html, body { background: white !important; margin: 0; padding: 0; }
+  body * { visibility: hidden; }
+  #resumePreview, #resumePreview * { visibility: visible; }
+  #resumePreview {
+    position: absolute; left: 0; top: 0;
+    width: 100%; max-width: 800px;
+    padding: 30px 60px;
+    background: white !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    zoom: 0.88;
+  }
+  @page { size: A4; margin: 0; }
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 900px) {
+  .two-col { flex-direction: column; }
+  #resumePreview { min-height: auto; }
+}
+@media (max-width: 480px) {
+  .step-tabs-row { gap: 4px; }
+  .step-tab { padding: 6px 10px; font-size: 11px; }
+}
+
+/* ========== TOOLTIP ========== */
+[data-tip] { position: relative; cursor: help; }
+[data-tip]:hover::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 6px); left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #e2e8f0;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 200;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Drag handle */
+.drag-handle { cursor: grab; color: #475569; user-select: none; }
+.drag-handle:active { cursor: grabbing; }
+.sortable-ghost { opacity: 0.4; }
+</style>
+</head>
+
+<body class="hero-bg">
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar px-6 py-3 flex items-center justify-between gap-4">
+  <div class="flex items-center gap-3">
+    <a href="resume-builder.html" class="btn-secondary text-sm px-3 py-2" style="font-size:12px;">← Back</a>
+    <span class="logo-text text-xl">Resume Builder Pro</span>
+    <span class="text-xs text-slate-500 hidden sm:inline">by Arun</span>
+  </div>
+  <div class="flex items-center gap-3">
+    <!-- ATS mini badge -->
+    <div class="flex items-center gap-2 text-sm">
+      <span class="text-slate-400 hidden sm:inline">ATS Score</span>
+      <span id="atsScoreBadge" class="font-bold text-white bg-gradient-to-r from-blue-600 to-violet-600 px-3 py-1 rounded-full text-xs">0/100</span>
+    </div>
+    <button id="downloadBtn" class="btn-primary text-sm px-4 py-2">🔽 Download</button>
+  </div>
+</div>
+
+<!-- ===== MAIN LAYOUT ===== -->
+<div class="max-w-[1400px] mx-auto px-4 py-6">
+
+  <!-- Step Tabs -->
+  <div class="flex gap-2 mb-6 overflow-x-auto pb-1 step-tabs-row" id="stepTabs">
+    <button class="step-tab active" data-step="1" onclick="goStep(1)">① Personal</button>
+    <button class="step-tab inactive" data-step="2" onclick="goStep(2)">② Template</button>
+    <button class="step-tab inactive" data-step="3" onclick="goStep(3)">③ Summary</button>
+    <button class="step-tab inactive" data-step="4" onclick="goStep(4)">④ Education</button>
+    <button class="step-tab inactive" data-step="5" onclick="goStep(5)">⑤ Skills</button>
+    <button class="step-tab inactive" data-step="6" onclick="goStep(6)">⑥ Projects</button>
+    <button class="step-tab inactive" data-step="7" onclick="goStep(7)">⑦ Achievements</button>
+    <button class="step-tab inactive" data-step="8" onclick="goStep(8)">⑧ Experience</button>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar-outer mb-6">
+    <div class="progress-bar-inner" id="progressBar" style="width:12.5%"></div>
+  </div>
+
+  <!-- TWO COL -->
+  <div class="flex gap-6 two-col">
+
+    <!-- LEFT: FORM PANEL -->
+    <div class="flex-1 min-w-0">
+
+      <!-- ===== STEP 1: PERSONAL INFO ===== -->
+      <div id="step1" class="glass-card p-6">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm">1</div>
+          <h2 class="text-lg font-semibold text-blue-300">Personal Information</h2>
+        </div>
+
+        <!-- Photo Upload -->
+        <div class="flex items-center gap-4 mb-5">
+          <div id="photoPreview" class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600/30 to-violet-600/30 border-2 border-dashed border-blue-500/40 flex items-center justify-center text-2xl overflow-hidden cursor-pointer" onclick="document.getElementById('photoInput').click()" title="Click to upload photo">
+            👤
+          </div>
+          <div>
+            <p class="text-sm font-medium text-slate-300">Profile Photo <span class="text-slate-500">(optional)</span></p>
+            <p class="text-xs text-slate-500 mt-0.5">Click to upload • PNG/JPG</p>
+            <input type="file" id="photoInput" accept="image/*" class="hidden" onchange="handlePhotoUpload(this)">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="form-label">Full Name *</label>
+            <input id="fullName" class="form-input" placeholder="e.g. Arun Kumar" oninput="updatePreview();updateATS()"/>
+          </div>
+          <div>
+            <label class="form-label">Job Title / Role</label>
+            <input id="jobTitle" class="form-input" placeholder="e.g. Full Stack Developer" oninput="updatePreview();updateATS()"/>
+          </div>
+          <div>
+            <label class="form-label">Email *</label>
+            <input id="email" class="form-input" placeholder="arun@email.com" type="email" oninput="updatePreview();updateATS()"/>
+          </div>
+          <div>
+            <label class="form-label">Phone *</label>
+            <input id="phone" class="form-input" placeholder="+91 98765 43210" oninput="updatePreview();updateATS()"/>
+          </div>
+          <div>
+            <label class="form-label">Location</label>
+            <input id="location" class="form-input" placeholder="Delhi, India" oninput="updatePreview();updateATS()"/>
+          </div>
+          <div>
+            <label class="form-label">LinkedIn URL</label>
+            <input id="linkedin" class="form-input" placeholder="linkedin.com/in/arun" oninput="updatePreview()"/>
+          </div>
+          <div>
+            <label class="form-label">GitHub URL</label>
+            <input id="github" class="form-input" placeholder="github.com/arun" oninput="updatePreview()"/>
+          </div>
+          <div>
+            <label class="form-label">Portfolio / Website</label>
+            <input id="portfolio" class="form-input" placeholder="arun.dev" oninput="updatePreview()"/>
+          </div>
+        </div>
+        <div class="flex justify-end mt-5">
+          <button class="btn-primary" onclick="goStep(2)">Next: Template →</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 2: TEMPLATE ===== -->
+      <div id="step2" class="glass-card p-6 hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm">2</div>
+          <h2 class="text-lg font-semibold text-blue-300">Choose Template</h2>
+        </div>
+        <div class="grid grid-cols-3 gap-3 mb-5">
+          <div class="template-card selected" data-template="classic" onclick="selectTemplate('classic')">
+            <div class="bg-white p-3 h-28 flex flex-col justify-start overflow-hidden">
+              <div class="h-2 w-20 bg-gray-800 rounded mb-1"></div>
+              <div class="h-1.5 w-32 bg-blue-600 rounded mb-2"></div>
+              <div class="h-1 w-full bg-gray-200 rounded mb-1"></div>
+              <div class="h-1 w-5/6 bg-gray-200 rounded mb-2"></div>
+              <div class="h-1.5 w-16 bg-blue-600 rounded mb-1"></div>
+              <div class="h-1 w-full bg-gray-200 rounded mb-1"></div>
+            </div>
+            <div class="bg-slate-800 p-2 text-center text-xs font-medium text-blue-300">Classic</div>
+          </div>
+          <div class="template-card" data-template="modern" onclick="selectTemplate('modern')">
+            <div class="flex h-28 overflow-hidden">
+              <div class="w-1/3 bg-blue-900 p-2">
+                <div class="w-8 h-8 rounded-full bg-blue-400 mx-auto mb-1"></div>
+                <div class="h-1 bg-blue-400/40 rounded mb-1"></div>
+                <div class="h-1 bg-blue-400/40 rounded mb-1"></div>
+              </div>
+              <div class="flex-1 bg-white p-2">
+                <div class="h-2 w-16 bg-gray-800 rounded mb-1"></div>
+                <div class="h-1 w-full bg-gray-200 rounded mb-1"></div>
+                <div class="h-1 w-5/6 bg-gray-200 rounded mb-1"></div>
+              </div>
+            </div>
+            <div class="bg-slate-800 p-2 text-center text-xs font-medium text-slate-300">Modern</div>
+          </div>
+          <div class="template-card" data-template="minimal" onclick="selectTemplate('minimal')">
+            <div class="bg-white p-3 h-28 flex flex-col justify-start overflow-hidden">
+              <div class="h-2.5 w-24 bg-black rounded mb-1"></div>
+              <div class="h-1 w-32 bg-gray-400 rounded mb-2"></div>
+              <div class="border-b border-gray-300 mb-2"></div>
+              <div class="h-1 w-full bg-gray-200 rounded mb-1"></div>
+              <div class="h-1 w-4/5 bg-gray-200 rounded mb-1"></div>
+            </div>
+            <div class="bg-slate-800 p-2 text-center text-xs font-medium text-slate-300">Minimal</div>
+          </div>
+        </div>
+        <!-- Color accent picker -->
+        <div class="mb-4">
+          <label class="form-label mb-2 block">Accent Color</label>
+          <div class="flex gap-3 flex-wrap">
+            <button class="w-7 h-7 rounded-full border-2 border-white/30 hover:scale-110 transition color-swatch" style="background:#1e40af" data-color="#1e40af" onclick="setAccent('#1e40af')"></button>
+            <button class="w-7 h-7 rounded-full border-2 border-white/30 hover:scale-110 transition color-swatch" style="background:#7c3aed" data-color="#7c3aed" onclick="setAccent('#7c3aed')"></button>
+            <button class="w-7 h-7 rounded-full border-2 border-white/30 hover:scale-110 transition color-swatch" style="background:#065f46" data-color="#065f46" onclick="setAccent('#065f46')"></button>
+            <button class="w-7 h-7 rounded-full border-2 border-white/30 hover:scale-110 transition color-swatch" style="background:#9f1239" data-color="#9f1239" onclick="setAccent('#9f1239')"></button>
+            <button class="w-7 h-7 rounded-full border-2 border-white/30 hover:scale-110 transition color-swatch" style="background:#1e3a5f" data-color="#1e3a5f" onclick="setAccent('#1e3a5f')"></button>
+            <button class="w-7 h-7 rounded-full border-2 border-white/30 hover:scale-110 transition color-swatch" style="background:#3d2c00" data-color="#92400e" onclick="setAccent('#92400e')"></button>
+            <input type="color" id="customColor" value="#1e40af" onchange="setAccent(this.value)" class="w-7 h-7 rounded-full cursor-pointer border-2 border-white/30" title="Custom color"/>
+          </div>
+        </div>
+        <!-- Font size -->
+        <div class="mb-5">
+          <label class="form-label">Font Size: <span id="fontSizeLabel">13px</span></label>
+          <input type="range" min="11" max="16" value="13" class="w-full accent-blue-500 mt-2" oninput="setFontSize(this.value)"/>
+        </div>
+        <div class="flex justify-between mt-5">
+          <button class="btn-secondary" onclick="goStep(1)">← Back</button>
+          <button class="btn-primary" onclick="goStep(3)">Next: Summary →</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 3: SUMMARY ===== -->
+      <div id="step3" class="glass-card p-6 hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm">3</div>
+          <h2 class="text-lg font-semibold text-blue-300">Professional Summary</h2>
+        </div>
+        <label class="form-label">Summary / Objective *</label>
+        <textarea id="summary" rows="5" class="form-input mb-3" placeholder="A passionate full-stack developer with experience in React, Node.js, and cloud technologies. Seeking to leverage my skills at…" oninput="updatePreview();updateATS()"></textarea>
+        <!-- AI enhance button -->
+        <button class="btn-add mb-2" onclick="aiEnhanceSummary()">✨ AI Enhance Summary</button>
+        <p class="text-xs text-slate-500 mt-1">Tip: Mention your tech stack, years of experience, and career goal.</p>
+        <div id="summaryCharCount" class="text-xs text-slate-500 mt-2">0 / 300 chars recommended</div>
+        <div class="flex justify-between mt-5">
+          <button class="btn-secondary" onclick="goStep(2)">← Back</button>
+          <button class="btn-primary" onclick="goStep(4)">Next: Education →</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 4: EDUCATION ===== -->
+      <div id="step4" class="glass-card p-6 hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm">4</div>
+          <h2 class="text-lg font-semibold text-blue-300">Education</h2>
+        </div>
+        <div id="educationContainer"></div>
+        <button class="btn-add mt-2" onclick="addEducationBlock()">➕ Add Education</button>
+        <div class="flex justify-between mt-5">
+          <button class="btn-secondary" onclick="goStep(3)">← Back</button>
+          <button class="btn-primary" onclick="goStep(5)">Next: Skills →</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 5: SKILLS ===== -->
+      <div id="step5" class="glass-card p-6 hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm">5</div>
+          <h2 class="text-lg font-semibold text-blue-300">Skills</h2>
+        </div>
+        <!-- Skill category chips -->
+        <div class="mb-4">
+          <p class="form-label mb-2">Quick Add Category</p>
+          <div class="flex flex-wrap gap-2">
+            <button class="btn-add text-xs px-2 py-1" onclick="addSkillBlock('Programming','Python, JavaScript, C++')">+ Programming</button>
+            <button class="btn-add text-xs px-2 py-1" onclick="addSkillBlock('Web Dev','React, Node.js, Tailwind CSS')">+ Web Dev</button>
+            <button class="btn-add text-xs px-2 py-1" onclick="addSkillBlock('Database','MySQL, MongoDB, PostgreSQL')">+ Database</button>
+            <button class="btn-add text-xs px-2 py-1" onclick="addSkillBlock('Tools','Git, GitHub, VS Code, Postman')">+ Tools</button>
+            <button class="btn-add text-xs px-2 py-1" onclick="addSkillBlock('Cloud','AWS, Firebase, Vercel')">+ Cloud</button>
+          </div>
+        </div>
+        <div id="skillsContainer"></div>
+        <button class="btn-add mt-2" onclick="addSkillBlock()">➕ Add Skill</button>
+        <div class="flex justify-between mt-5">
+          <button class="btn-secondary" onclick="goStep(4)">← Back</button>
+          <button class="btn-primary" onclick="goStep(6)">Next: Projects →</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 6: PROJECTS ===== -->
+      <div id="step6" class="glass-card p-6 hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm">6</div>
+          <h2 class="text-lg font-semibold text-blue-300">Projects</h2>
+        </div>
+        <div id="projectsContainer"></div>
+        <button class="btn-add mt-2" onclick="addProjectBlock()">➕ Add Project</button>
+        <div class="flex justify-between mt-5">
+          <button class="btn-secondary" onclick="goStep(5)">← Back</button>
+          <button class="btn-primary" onclick="goStep(7)">Next: Achievements →</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 7: ACHIEVEMENTS ===== -->
+      <div id="step7" class="glass-card p-6 hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm">7</div>
+          <h2 class="text-lg font-semibold text-blue-300">Achievements & Certificates</h2>
+        </div>
+        <div id="achievementsContainer"></div>
+        <button class="btn-add mt-2" onclick="addAchievementBlock()">➕ Add Achievement</button>
+        <div class="flex justify-between mt-5">
+          <button class="btn-secondary" onclick="goStep(6)">← Back</button>
+          <button class="btn-primary" onclick="goStep(8)">Next: Experience →</button>
+        </div>
+      </div>
+
+      <!-- ===== STEP 8: EXPERIENCE ===== -->
+      <div id="step8" class="glass-card p-6 hidden">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm">8</div>
+          <h2 class="text-lg font-semibold text-blue-300">Experience / Internship</h2>
+        </div>
+        <div id="experienceContainer"></div>
+        <button class="btn-add mt-2" onclick="addExperienceBlock()">➕ Add Experience</button>
+        <!-- ATS Score Card -->
+        <div class="mt-6 glass-card p-5">
+          <div class="flex items-center gap-4">
+            <div class="relative w-20 h-20 flex-shrink-0">
+              <svg class="ats-ring-svg w-20 h-20" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="#1e293b" stroke-width="8"/>
+                <circle id="atsRingCircle" cx="40" cy="40" r="34" fill="none" stroke="url(#atsGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+                <defs>
+                  <linearGradient id="atsGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#3b82f6"/>
+                    <stop offset="100%" stop-color="#a78bfa"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="ats-score-num text-white" id="atsScoreNum">0</span>
+              </div>
+            </div>
+            <div class="flex-1">
+              <p class="font-semibold text-white mb-1">ATS Score <span class="text-xs text-slate-400 font-normal">/ 100</span></p>
+              <ul id="atsTips" class="text-xs text-slate-400 space-y-1 list-disc list-inside"></ul>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-between mt-5">
+          <button class="btn-secondary" onclick="goStep(7)">← Back</button>
+          <button class="btn-primary" onclick="document.getElementById('downloadBtn').click()">🔽 Download Resume</button>
+        </div>
+      </div>
+
+    </div><!-- /LEFT -->
+
+    <!-- RIGHT: RESUME PREVIEW -->
+    <div class="w-full md:w-[480px] flex-shrink-0">
+      <div class="glass-card overflow-hidden sticky top-[72px]">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-white/5">
+          <span class="text-sm font-medium text-slate-300">Live Preview</span>
+          <div class="flex gap-2">
+            <button class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded border border-white/10 hover:border-white/30 transition" onclick="zoomPreview(-1)">−</button>
+            <span class="text-xs text-slate-500" id="zoomLabel">100%</span>
+            <button class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded border border-white/10 hover:border-white/30 transition" onclick="zoomPreview(1)">+</button>
+          </div>
+        </div>
+        <div class="overflow-auto" style="max-height:82vh;">
+          <div id="previewWrapper" style="transform-origin:top left; transition:transform 0.2s;">
+            <div id="resumePreview" class="template-classic p-8" style="min-width:595px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /two-col -->
+</div><!-- /main -->
+
+<!-- ===== LOGIN MODAL ===== -->
+<div id="loginModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-500 hover:text-white text-xl">×</button>
+    <div class="text-center mb-6">
+      <div class="text-3xl mb-2">🔐</div>
+      <h2 id="modalTitle" class="text-xl font-bold text-white font-['Poppins']">Login to Download</h2>
+      <p class="text-sm text-slate-400 mt-1">Your resume is ready — just sign in!</p>
+    </div>
+    <input type="email" id="loginEmail" placeholder="Email address" class="form-input mb-3"/>
+    <input id="signupPhone" type="tel" placeholder="Phone (10 digits)" class="form-input mb-3 hidden"/>
+    <input type="password" id="loginPassword" placeholder="Password" class="form-input mb-3"/>
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" class="form-input mb-4 hidden"/>
+    <button id="authActionBtn" onclick="handleLogin()" class="btn-primary w-full mb-3">Login</button>
+    <p class="text-sm text-center text-slate-400">
+      <span id="toggleText">Don't have an account?</span>
+      <button onclick="toggleAuthMode()" class="text-blue-400 hover:underline ml-1" id="toggleLink">Sign Up</button>
+    </p>
+  </div>
+</div>
+
+<!-- ===== AI ENHANCE MODAL ===== -->
+<div id="aiModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <button onclick="document.getElementById('aiModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-500 hover:text-white text-xl">×</button>
+    <div class="text-center mb-4">
+      <div class="text-3xl mb-2">✨</div>
+      <h2 class="text-xl font-bold text-white">AI Enhanced Summary</h2>
+    </div>
+    <div id="aiResult" class="text-sm text-slate-300 bg-slate-800/60 p-4 rounded-xl leading-relaxed mb-4 min-h-[80px]">
+      Generating…
+    </div>
+    <div class="flex gap-3">
+      <button class="btn-secondary flex-1" onclick="document.getElementById('aiModal').classList.add('hidden')">Cancel</button>
+      <button class="btn-primary flex-1" onclick="applyAiSummary()">Use This ✓</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  STATE
+// ============================================================
+let currentStep = 1;
+let selectedTemplate = 'classic';
+let accentColor = '#1e40af';
+let previewFontSize = 13;
+let previewZoom = 1;
+let photoDataUrl = '';
+let aiGeneratedSummary = '';
+
+// ============================================================
+//  FIREBASE CONFIG  (Arun's project)
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyAtMfnVtNFF0mxCx79XyHSy4oMgqEcC4Oo",
+  authDomain: "arun-portfolio-a3b35.firebaseapp.com",
+  projectId: "arun-portfolio-a3b35",
+  storageBucket: "arun-portfolio-a3b35.firebasestorage.app",
+  messagingSenderId: "675276232971",
+  appId: "1:675276232971:web:c80d5646bd5a121320aa0e"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// ============================================================
+//  STEP NAVIGATION
+// ============================================================
+function goStep(n) {
+  document.getElementById('step' + currentStep).classList.add('hidden');
+  currentStep = n;
+  document.getElementById('step' + n).classList.remove('hidden');
+  // update tabs
+  document.querySelectorAll('.step-tab').forEach(tab => {
+    const t = parseInt(tab.dataset.step);
+    tab.className = 'step-tab ' + (t === n ? 'active' : t < n ? 'done' : 'inactive');
+  });
+  document.getElementById('progressBar').style.width = (n / 8 * 100) + '%';
+  updatePreview();
+}
+
+// ============================================================
+//  PHOTO
+// ============================================================
+function handlePhotoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    photoDataUrl = e.target.result;
+    const prev = document.getElementById('photoPreview');
+    prev.innerHTML = `<img src="${photoDataUrl}" class="w-full h-full object-cover rounded-full"/>`;
+    updatePreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ============================================================
+//  TEMPLATE & STYLE
+// ============================================================
+function selectTemplate(t) {
+  selectedTemplate = t;
+  document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`[data-template="${t}"]`).classList.add('selected');
+  updatePreview();
+}
+
+function setAccent(color) {
+  accentColor = color;
+  document.getElementById('customColor').value = color;
+  updatePreview();
+}
+
+function setFontSize(val) {
+  previewFontSize = parseInt(val);
+  document.getElementById('fontSizeLabel').textContent = val + 'px';
+  document.getElementById('resumePreview').style.fontSize = val + 'px';
+}
+
+function zoomPreview(dir) {
+  previewZoom = Math.min(1.4, Math.max(0.5, previewZoom + dir * 0.1));
+  document.getElementById('previewWrapper').style.transform = `scale(${previewZoom})`;
+  document.getElementById('zoomLabel').textContent = Math.round(previewZoom * 100) + '%';
+}
+
+// ============================================================
+//  EDUCATION
+// ============================================================
+function addEducationBlock(degree='', school='', year='', grade='') {
+  const c = document.getElementById('educationContainer');
+  const id = Date.now();
+  const div = document.createElement('div');
+  div.className = 'section-block';
+  div.dataset.id = id;
+  div.innerHTML = `
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div><label class="form-label">Degree / Level</label>
+        <input class="form-input edu-degree" placeholder="BTech in CSE" value="${degree}" oninput="updatePreview();updateATS()"/></div>
+      <div><label class="form-label">School / University</label>
+        <input class="form-input edu-school" placeholder="SAITM University" value="${school}" oninput="updatePreview();updateATS()"/></div>
+      <div><label class="form-label">Year</label>
+        <input class="form-input edu-year" placeholder="2022 – 2026" value="${year}" oninput="updatePreview()"/></div>
+      <div><label class="form-label">Grade / CGPA</label>
+        <input class="form-input edu-grade" placeholder="8.5 / 10" value="${grade}" oninput="updatePreview()"/></div>
+    </div>
+    <button class="btn-remove mt-2" onclick="this.closest('.section-block').remove();updatePreview();updateATS()">❌ Remove</button>`;
+  c.appendChild(div);
+  updatePreview();
+}
+
+// ============================================================
+//  SKILLS
+// ============================================================
+function addSkillBlock(title='', desc='') {
+  const c = document.getElementById('skillsContainer');
+  const div = document.createElement('div');
+  div.className = 'section-block flex gap-3 items-start';
+  div.innerHTML = `
+    <div class="flex-1 grid sm:grid-cols-2 gap-3">
+      <div><label class="form-label">Category</label>
+        <input class="form-input skill-title" placeholder="e.g. Programming" value="${title}" oninput="updatePreview();updateATS()"/></div>
+      <div><label class="form-label">Skills</label>
+        <input class="form-input skill-desc" placeholder="Python, Java, C++" value="${desc}" oninput="updatePreview();updateATS()"/></div>
+    </div>
+    <button class="btn-remove mt-5" onclick="this.closest('.section-block').remove();updatePreview();updateATS()">❌</button>`;
+  c.appendChild(div);
+  updatePreview();
+}
+
+// ============================================================
+//  PROJECTS
+// ============================================================
+function addProjectBlock(title='', tech='', link='') {
+  const c = document.getElementById('projectsContainer');
+  const id = Date.now();
+  const div = document.createElement('div');
+  div.className = 'section-block';
+  div.dataset.id = id;
+  div.innerHTML = `
+    <div class="grid sm:grid-cols-2 gap-3 mb-3">
+      <div><label class="form-label">Project Title</label>
+        <input class="form-input proj-title" placeholder="Portfolio Website" value="${title}" oninput="updatePreview();updateATS()"/></div>
+      <div><label class="form-label">Tech Stack</label>
+        <input class="form-input proj-tech" placeholder="React, Node.js, MongoDB" value="${tech}" oninput="updatePreview()"/></div>
+      <div class="sm:col-span-2"><label class="form-label">Live / GitHub Link</label>
+        <input class="form-input proj-link" placeholder="https://github.com/arun/project" value="${link}" oninput="updatePreview()"/></div>
+    </div>
+    <div class="proj-bullets-container space-y-2"></div>
+    <div class="flex gap-2 mt-2">
+      <button class="btn-add text-xs" onclick="addBullet(this)">➕ Add Point</button>
+      <button class="btn-remove" onclick="this.closest('.section-block').remove();updatePreview();updateATS()">❌ Remove</button>
+    </div>`;
+  c.appendChild(div);
+  addBullet(div.querySelector('.btn-add'));
+  updatePreview();
+}
+
+function addBullet(btn) {
+  const container = btn.closest('.section-block').querySelector('.proj-bullets-container');
+  const wrap = document.createElement('div');
+  wrap.className = 'flex gap-2 items-center';
+  wrap.innerHTML = `<input class="form-input proj-point flex-1" placeholder="• Built X using Y, resulting in Z…" oninput="updatePreview();updateATS()"/>
+    <button class="btn-remove" onclick="this.parentElement.remove();updatePreview()">×</button>`;
+  container.appendChild(wrap);
+  updatePreview();
+}
+
+// ============================================================
+//  ACHIEVEMENTS
+// ============================================================
+function addAchievementBlock(val='') {
+  const c = document.getElementById('achievementsContainer');
+  const div = document.createElement('div');
+  div.className = 'flex gap-2 items-center mb-2';
+  div.innerHTML = `<input class="form-input achievement flex-1" placeholder="• Solved 200+ DSA problems on LeetCode" value="${val}" oninput="updatePreview();updateATS()"/>
+    <button class="btn-remove" onclick="this.parentElement.remove();updatePreview();updateATS()">×</button>`;
+  c.appendChild(div);
+  updatePreview();
+}
+
+// ============================================================
+//  EXPERIENCE
+// ============================================================
+function addExperienceBlock() {
+  const c = document.getElementById('experienceContainer');
+  const div = document.createElement('div');
+  div.className = 'section-block';
+  div.innerHTML = `
+    <div class="grid sm:grid-cols-2 gap-3 mb-3">
+      <div><label class="form-label">Role / Title</label>
+        <input class="form-input exp-role" placeholder="Frontend Intern" oninput="updatePreview();updateATS()"/></div>
+      <div><label class="form-label">Company</label>
+        <input class="form-input exp-company" placeholder="TechCorp Pvt. Ltd." oninput="updatePreview()"/></div>
+      <div><label class="form-label">Duration</label>
+        <input class="form-input exp-duration" placeholder="June 2024 – Aug 2024" oninput="updatePreview()"/></div>
+      <div><label class="form-label">Location</label>
+        <input class="form-input exp-location" placeholder="Remote / Delhi" oninput="updatePreview()"/></div>
+    </div>
+    <div class="exp-bullets-container space-y-2"></div>
+    <div class="flex gap-2 mt-2">
+      <button class="btn-add text-xs" onclick="addExpBullet(this)">➕ Add Point</button>
+      <button class="btn-remove" onclick="this.closest('.section-block').remove();updatePreview();updateATS()">❌ Remove</button>
+    </div>`;
+  c.appendChild(div);
+  addExpBullet(div.querySelector('.btn-add'));
+  updatePreview();
+}
+
+function addExpBullet(btn) {
+  const container = btn.closest('.section-block').querySelector('.exp-bullets-container');
+  const wrap = document.createElement('div');
+  wrap.className = 'flex gap-2 items-center';
+  wrap.innerHTML = `<input class="form-input exp-point flex-1" placeholder="• Developed X feature that improved Y by Z%" oninput="updatePreview();updateATS()"/>
+    <button class="btn-remove" onclick="this.parentElement.remove();updatePreview()">×</button>`;
+  container.appendChild(wrap);
+  updatePreview();
+}
+
+// ============================================================
+//  CHAR COUNT FOR SUMMARY
+// ============================================================
+document.getElementById('summary').addEventListener('input', function() {
+  document.getElementById('summaryCharCount').textContent = this.value.length + ' / 300 chars recommended';
+  const el = document.getElementById('summaryCharCount');
+  el.style.color = this.value.length < 100 ? '#f87171' : this.value.length <= 300 ? '#4ade80' : '#fbbf24';
+});
+
+// ============================================================
+//  AI ENHANCE SUMMARY (calls Anthropic API)
+// ============================================================
+function aiEnhanceSummary() {
+  const name = document.getElementById('fullName').value || 'the candidate';
+  const title = document.getElementById('jobTitle').value || 'developer';
+  const raw = document.getElementById('summary').value;
+  const skills = [...document.querySelectorAll('.skill-title')].map(i => i.value).filter(Boolean).join(', ');
+  document.getElementById('aiModal').classList.remove('hidden');
+  document.getElementById('aiResult').textContent = 'Generating…';
+
+  fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 300,
+      messages: [{
+        role: "user",
+        content: `Write a professional resume summary (3-4 sentences, ~80-120 words) for ${name}, a ${title}. ${raw ? 'Improve this draft: "' + raw + '"' : ''} ${skills ? 'Tech skills: ' + skills + '.' : ''} Make it ATS-optimized, impactful, first-person, no fluff. Return only the summary text.`
+      }]
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+    aiGeneratedSummary = d.content?.map(c => c.text||'').join('') || 'Could not generate. Please try again.';
+    document.getElementById('aiResult').textContent = aiGeneratedSummary;
+  })
+  .catch(() => {
+    document.getElementById('aiResult').textContent = 'API error. Please try again.';
+  });
+}
+
+function applyAiSummary() {
+  if (aiGeneratedSummary) {
+    document.getElementById('summary').value = aiGeneratedSummary;
+    document.getElementById('summary').dispatchEvent(new Event('input'));
+    updatePreview();
+  }
+  document.getElementById('aiModal').classList.add('hidden');
+}
+
+// ============================================================
+//  ATS SCORE
+// ============================================================
+function updateATS() {
+  let score = 0;
+  const tips = [];
+
+  const fname = document.getElementById('fullName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const location = document.getElementById('location').value.trim();
+  const summary = document.getElementById('summary').value.trim();
+
+  if (fname) score += 5; else tips.push('Add your full name');
+  if (email) score += 5; else tips.push('Add your email');
+  if (phone) score += 5; else tips.push('Add your phone number');
+  if (location) score += 3; else tips.push('Add your location');
+  if (summary.length >= 60) score += 10; else tips.push('Write a proper summary (60+ chars)');
+
+  const eduBlocks = document.querySelectorAll('.edu-degree');
+  if (eduBlocks.length) score += 12; else tips.push('Add at least one education entry');
+
+  const skillTitles = document.querySelectorAll('.skill-title');
+  const skillDescs = document.querySelectorAll('.skill-desc');
+  let skillCount = 0;
+  for (let i=0;i<skillTitles.length;i++) {
+    if(skillTitles[i].value && skillDescs[i]?.value) skillCount++;
+  }
+  if (skillCount>=2) score += 10; else if(skillCount===1) score += 5; else tips.push('Add your technical skills');
+
+  const projTitles = document.querySelectorAll('.proj-title');
+  const projPoints = document.querySelectorAll('.proj-point');
+  let validProjects = 0;
+  projTitles.forEach(pt => { if(pt.value.trim()) validProjects++; });
+  if (validProjects>=2) score += 15; else if(validProjects===1) score += 8; else tips.push('Add at least 2 projects');
+  const filledPoints = [...projPoints].filter(p=>p.value.trim()).length;
+  if (filledPoints>=6) score += 10; else if(filledPoints>=3) score += 5; else tips.push('Add bullet points to projects (3+ each)');
+
+  const achs = document.querySelectorAll('.achievement');
+  const achCount = [...achs].filter(a=>a.value.trim()).length;
+  if (achCount>=2) score += 10; else if(achCount===1) score += 5; else tips.push('Add achievements/certificates');
+
+  const expRoles = document.querySelectorAll('.exp-role');
+  const hasExp = [...expRoles].some(r=>r.value.trim());
+  if (hasExp) score += 15; else tips.push("Add internship/experience for higher score");
+
+  const linkedin = document.getElementById('linkedin').value.trim();
+  const github = document.getElementById('github').value.trim();
+  if (linkedin) score += 3;
+  if (github) score += 2;
+
+  score = Math.min(score, 100);
+
+  // Update UI
+  document.getElementById('atsScoreBadge').textContent = score + '/100';
+  document.getElementById('atsScoreNum').textContent = score;
+  const dashoffset = 213.6 - (213.6 * score / 100);
+  document.getElementById('atsRingCircle').style.strokeDashoffset = dashoffset;
+  const tipsEl = document.getElementById('atsTips');
+  if (tipsEl) tipsEl.innerHTML = tips.slice(0,4).map(t=>`<li>${t}</li>`).join('');
+}
+
+// ============================================================
+//  PREVIEW RENDERER
+// ============================================================
+function updatePreview() {
+  const el = document.getElementById('resumePreview');
+  el.className = `template-${selectedTemplate} p-8`;
+  el.style.fontSize = previewFontSize + 'px';
+
+  const name = document.getElementById('fullName').value || 'Your Name';
+  const title = document.getElementById('jobTitle').value;
+  const email = document.getElementById('email').value || 'email@example.com';
+  const phone = document.getElementById('phone').value || 'Phone';
+  const location = document.getElementById('location').value || 'City';
+  const linkedin = document.getElementById('linkedin').value;
+  const github = document.getElementById('github').value;
+  const portfolio = document.getElementById('portfolio').value;
+  const summary = document.getElementById('summary').value;
+
+  const ac = accentColor;
+
+  if (selectedTemplate === 'modern') {
+    renderModern(el, { name, title, email, phone, location, linkedin, github, portfolio, summary, ac });
+  } else if (selectedTemplate === 'minimal') {
+    renderMinimal(el, { name, title, email, phone, location, linkedin, github, portfolio, summary, ac });
+  } else {
+    renderClassic(el, { name, title, email, phone, location, linkedin, github, portfolio, summary, ac });
+  }
+}
+
+// ---------- helpers ----------
+function getEduHTML(ac) {
+  const blocks = document.querySelectorAll('#educationContainer .section-block');
+  if (!blocks.length) return '';
+  let html = '';
+  blocks.forEach(b => {
+    const deg = b.querySelector('.edu-degree')?.value;
+    const sch = b.querySelector('.edu-school')?.value;
+    const yr  = b.querySelector('.edu-year')?.value;
+    const gr  = b.querySelector('.edu-grade')?.value;
+    if (deg||sch) html += `<div style="margin-bottom:6px"><strong>${deg||''}</strong>${sch?' — '+sch:''}<span style="float:right;color:#666">${yr||''}</span>${gr?`<br><small style="color:#666">Grade: ${gr}</small>`:''}</div>`;
+  });
+  return html;
+}
+
+function getSkillsHTML(ac) {
+  const titles = document.querySelectorAll('.skill-title');
+  const descs  = document.querySelectorAll('.skill-desc');
+  let html = '<ul style="margin:0;padding-left:16px;columns:2">';
+  let count = 0;
+  for (let i=0;i<titles.length;i++) {
+    if (titles[i].value && descs[i]?.value) {
+      html += `<li style="margin-bottom:3px"><strong>${titles[i].value}:</strong> ${descs[i].value}</li>`;
+      count++;
+    }
+  }
+  html += '</ul>';
+  return count ? html : '';
+}
+
+function getProjectsHTML(ac) {
+  const blocks = document.querySelectorAll('#projectsContainer .section-block');
+  let html = '';
+  blocks.forEach(b => {
+    const t = b.querySelector('.proj-title')?.value;
+    const tech = b.querySelector('.proj-tech')?.value;
+    const link = b.querySelector('.proj-link')?.value;
+    const points = [...b.querySelectorAll('.proj-point')].map(p=>p.value).filter(Boolean);
+    if (t) {
+      html += `<div style="margin-bottom:10px">
+        <strong style="color:${ac}">💻 ${t}</strong>${tech?` <span style="font-size:0.85em;color:#888">| ${tech}</span>`:''}${link?` <a href="${link}" style="font-size:0.8em;color:${ac};margin-left:6px" target="_blank">↗</a>`:''}
+        ${points.map(p=>`<div style="padding-left:14px;color:#333;margin-top:2px">• ${p}</div>`).join('')}
+      </div>`;
+    }
+  });
+  return html;
+}
+
+function getAchievementsHTML() {
+  const items = [...document.querySelectorAll('.achievement')].map(a=>a.value).filter(Boolean);
+  if (!items.length) return '';
+  return '<ul style="margin:0;padding-left:16px">' + items.map(a=>`<li style="margin-bottom:3px">${a}</li>`).join('') + '</ul>';
+}
+
+function getExperienceHTML(ac) {
+  const blocks = document.querySelectorAll('#experienceContainer .section-block');
+  let html = '';
+  blocks.forEach(b => {
+    const role = b.querySelector('.exp-role')?.value;
+    const co   = b.querySelector('.exp-company')?.value;
+    const dur  = b.querySelector('.exp-duration')?.value;
+    const loc  = b.querySelector('.exp-location')?.value;
+    const pts  = [...b.querySelectorAll('.exp-point')].map(p=>p.value).filter(Boolean);
+    if (role||co) {
+      html += `<div style="margin-bottom:10px">
+        <strong>${role||''}</strong>${co?` — <em>${co}</em>`:''}
+        <span style="float:right;color:#666;font-size:0.85em">${dur||''}${loc?' | '+loc:''}</span>
+        ${pts.map(p=>`<div style="padding-left:14px;color:#333;margin-top:2px">• ${p}</div>`).join('')}
+      </div>`;
+    }
+  });
+  return html;
+}
+
+function sectionHtml(heading, content, ac) {
+  if (!content) return '';
+  return `<div style="margin-top:18px">
+    <h3 style="font-size:1.05em;font-weight:700;color:${ac};margin:0 0 4px 0;text-transform:uppercase;letter-spacing:.05em;">${heading}</h3>
+    <hr style="border:none;border-top:1.5px solid ${ac};margin:0 0 8px 0">
+    ${content}
+  </div>`;
+}
+
+// ---------- CLASSIC ----------
+function renderClassic(el, d) {
+  const contactLine = [d.phone, d.location, d.email, d.linkedin, d.github, d.portfolio].filter(Boolean).join(' | ');
+  const photoTag = photoDataUrl ? `<img src="${photoDataUrl}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;float:right;margin-left:12px;border:2px solid ${d.ac}"/>` : '';
+  el.innerHTML = `
+    ${photoTag}
+    <div style="text-align:center;margin-bottom:14px">
+      <h1 style="font-size:1.7em;font-weight:800;color:#111;margin:0">${d.name}</h1>
+      ${d.title ? `<p style="color:${d.ac};font-weight:600;margin:3px 0 0">${d.title}</p>` : ''}
+      <p style="font-size:0.8em;color:#555;margin-top:5px">${contactLine}</p>
+    </div>
+    ${sectionHtml('Summary', d.summary ? `<p style="color:#333;margin:0">${d.summary}</p>` : '', d.ac)}
+    ${sectionHtml('Education', getEduHTML(d.ac), d.ac)}
+    ${sectionHtml('Skills', getSkillsHTML(d.ac), d.ac)}
+    ${sectionHtml('Projects', getProjectsHTML(d.ac), d.ac)}
+    ${sectionHtml('Achievements & Certificates', getAchievementsHTML(), d.ac)}
+    ${sectionHtml('Experience', getExperienceHTML(d.ac), d.ac)}
+  `;
+}
+
+// ---------- MODERN (sidebar) ----------
+function renderModern(el, d) {
+  const contactLine = [d.phone, d.location, d.email].filter(Boolean);
+  const links = [d.linkedin, d.github, d.portfolio].filter(Boolean);
+  el.style.padding = '0';
+  el.style.display = 'flex';
+  el.innerHTML = `
+    <div style="width:200px;flex-shrink:0;background:${d.ac};color:#fff;padding:24px 16px;min-height:100%">
+      ${photoDataUrl ? `<img src="${photoDataUrl}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 12px;border:2px solid rgba(255,255,255,0.5)"/>` : `<div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.2);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:24px">👤</div>`}
+      <h1 style="font-size:1.1em;font-weight:800;color:#fff;margin:0 0 4px;text-align:center">${d.name}</h1>
+      ${d.title ? `<p style="font-size:0.8em;color:rgba(255,255,255,0.8);text-align:center;margin:0 0 12px">${d.title}</p>` : ''}
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.3);margin:10px 0"/>
+      <div style="font-size:0.78em;line-height:1.8">${contactLine.map(c=>`<div>📌 ${c}</div>`).join('')}${links.map(l=>`<div>🔗 ${l}</div>`).join('')}</div>
+      ${getSkillsModern(d.ac)}
+    </div>
+    <div style="flex:1;padding:24px 20px;overflow:hidden">
+      ${d.summary ? `<div style="margin-bottom:14px"><h3 style="font-size:1em;font-weight:700;color:${d.ac};text-transform:uppercase;letter-spacing:.05em;margin:0 0 6px">Summary</h3><p style="color:#333;margin:0;font-size:0.92em">${d.summary}</p></div>` : ''}
+      ${sectionHtml('Education', getEduHTML(d.ac), d.ac)}
+      ${sectionHtml('Projects', getProjectsHTML(d.ac), d.ac)}
+      ${sectionHtml('Achievements', getAchievementsHTML(), d.ac)}
+      ${sectionHtml('Experience', getExperienceHTML(d.ac), d.ac)}
+    </div>`;
+}
+
+function getSkillsModern(ac) {
+  const titles = document.querySelectorAll('.skill-title');
+  const descs  = document.querySelectorAll('.skill-desc');
+  let html = '';
+  for (let i=0;i<titles.length;i++) {
+    if (titles[i].value && descs[i]?.value) {
+      html += `<div style="margin-bottom:8px"><div style="font-size:0.78em;font-weight:700;color:rgba(255,255,255,0.9);margin-bottom:2px">${titles[i].value}</div><div style="font-size:0.75em;color:rgba(255,255,255,0.7)">${descs[i].value}</div></div>`;
+    }
+  }
+  return html ? `<hr style="border:none;border-top:1px solid rgba(255,255,255,0.3);margin:10px 0"/><div style="font-size:0.8em;font-weight:700;color:#fff;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Skills</div>${html}` : '';
+}
+
+// ---------- MINIMAL ----------
+function renderMinimal(el, d) {
+  el.style.padding = '32px 40px';
+  const contactLine = [d.phone, d.location, d.email, d.linkedin, d.github].filter(Boolean).join('  ·  ');
+  function minSection(heading, content) {
+    if (!content) return '';
+    return `<div style="margin-top:20px">
+      <div style="font-size:0.75em;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${d.ac};margin-bottom:8px">${heading}</div>
+      ${content}
+    </div>`;
+  }
+  el.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:16px;border-bottom:2px solid #111;padding-bottom:14px">
+      ${photoDataUrl ? `<img src="${photoDataUrl}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;flex-shrink:0"/>` : ''}
+      <div>
+        <h1 style="font-size:2em;font-weight:900;color:#111;margin:0;line-height:1">${d.name}</h1>
+        ${d.title?`<p style="color:${d.ac};font-weight:600;margin:4px 0 0">${d.title}</p>`:''}
+        <p style="font-size:0.78em;color:#666;margin-top:5px">${contactLine}</p>
+      </div>
+    </div>
+    ${d.summary ? minSection('Profile', `<p style="color:#333;margin:0">${d.summary}</p>`) : ''}
+    ${minSection('Education', getEduHTML(d.ac))}
+    ${minSection('Technical Skills', getSkillsHTML(d.ac))}
+    ${minSection('Projects', getProjectsHTML(d.ac))}
+    ${minSection('Achievements', getAchievementsHTML())}
+    ${minSection('Experience', getExperienceHTML(d.ac))}
+  `;
+}
+
+// ============================================================
+//  LOGIN / AUTH (same as original project)
+// ============================================================
+let isLoginMode = true;
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { alert('⚠️ Enter email and password.'); return; }
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => { alert('✅ Login successful! Downloading…'); closeLoginModal(); setTimeout(()=>window.print(), 400); })
+    .catch(e => alert('❌ ' + e.message));
+}
+function handleSignup() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { alert('⚠️ Enter email and password.'); return; }
+  auth.createUserWithEmailAndPassword(email, password)
+    .then(() => { alert('✅ Account created! Downloading…'); closeLoginModal(); setTimeout(()=>window.print(), 500); })
+    .catch(e => alert('❌ ' + e.message));
+}
+function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
+function toggleAuthMode() {
+  isLoginMode = !isLoginMode;
+  document.getElementById('modalTitle').textContent = isLoginMode ? 'Login to Download' : 'Create Account';
+  document.getElementById('authActionBtn').textContent = isLoginMode ? 'Login' : 'Sign Up';
+  document.getElementById('authActionBtn').setAttribute('onclick', isLoginMode ? 'handleLogin()' : 'handleSignup()');
+  document.getElementById('signupPhone').classList.toggle('hidden', isLoginMode);
+  document.getElementById('confirmPassword').classList.toggle('hidden', isLoginMode);
+  document.getElementById('toggleText').textContent = isLoginMode ? "Don't have an account?" : 'Already have an account?';
+  document.getElementById('toggleLink').textContent = isLoginMode ? 'Sign Up' : 'Login';
+}
+
+// ============================================================
+//  DOWNLOAD BUTTON
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    updatePreview();
+    document.getElementById('loginModal').classList.remove('hidden');
+  });
+
+  // Seed default data
+  addEducationBlock('10th Class (CBSE)', 'Unknown School', '2019 – 2020', '');
+  addEducationBlock('12th Class (CBSE)', 'Unknown School', '2022', '');
+  addEducationBlock('BTech in CSE with AIML', 'SAITM University', '2022 – 2026', '');
+  addSkillBlock('Programming', 'C++, Python, JavaScript');
+  addAchievementBlock('');
+  addProjectBlock();
+  addExpBullet && null; // no auto-add experience
+
+  updatePreview();
+  updateATS();
+});
+</script>
+
+</body>
+</html>

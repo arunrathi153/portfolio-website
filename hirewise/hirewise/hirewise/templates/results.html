@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Results — HireWise Student Shortlister</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1100px;
+      margin: 20px auto;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .btn {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-back {
+      background-color: #3498db;
+      color: white;
+    }
+    .btn-back:hover {
+      background-color: #2980b9;
+    }
+
+    .btn-download {
+      background-color: #27ae60;
+      color: white;
+    }
+    .btn-download:hover {
+      background-color: #1e8449;
+    }
+
+    p.note {
+      font-size: 14px;
+      color: #555;
+      background: #ecf0f1;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #34495e;
+      color: white;
+      font-weight: normal;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .match {
+      color: #27ae60;
+      font-weight: bold;
+    }
+
+    .no-match {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Shortlisted Students — HireWise</h1>
+
+  <div class="top-bar">
+    <a href="/" class="btn btn-back">← Back</a>
+    {% if csv_download %}
+      <a href="{{ url_for('download_csv', csv_name=csv_name) }}" class="btn btn-download">⬇ Download PDF</a>
+    {% endif %}
+  </div>
+
+  <p class="note">
+    <strong>Note:</strong> The total score is calculated as:
+    <em>(Skills% × 0.6) + (Experience Match% × 0.3) + (Education Match% × 0.1)</em>.
+    Skills% is based on the percentage of required skills matched.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th><th>Name</th><th>File</th><th>Total Score</th>
+        <th>Matched Skills</th><th>Skills %</th><th>Experience</th><th>Education</th><th>Years Exp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in ranked %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ r.name }}</td>
+        <td>{{ r.file_name }}</td>
+        <td>{{ r.score.total_score }}</td>
+        <td>{{ r.score.matched_skills | join(', ') }}</td>
+        <td>{{ r.score.skills_score }}</td>
+        <td class="{% if r.score.experience_match %}match{% else %}no-match{% endif %}">
+          {% if r.score.experience_match %}Matched{% else %}Not Matched{% endif %}
+        </td>
+        <td class="{% if r.score.education_match %}match{% else %}no-match{% endif %}">
+          {% if r.score.education_match %}Matched{% else %}Not Matched{% endif %}
+        </td>
+        <td>{{ r.details.experience }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

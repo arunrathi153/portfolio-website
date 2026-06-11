@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arun | Tech Portfolio</title>
+  <!-- Add this instead in <head> -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+/>
+
+
+
+  <link rel="stylesheet" href="style.css" />
+
+
+  <style>
+
+  
+.home-content {
+  display: flex;
+  align-items: center;             /* Vertically center left + right */
+  justify-content: space-between;  /* Space between columns */
+  flex-wrap: nowrap;               /* Keep side‑by‑side */
+  gap: 40px;                       
+  padding: 40px 5%;
+  margin-top: 0px;
+}
+
+.home-content .left {
+  flex: 1;
+  min-width: 300px;
+  padding-left: 280px;              /* tweak as needed */
+}
+
+.home-content .right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px;
+  padding-right: 280px;
+}
+
+.profile-pic {
+  width: 300px;
+  height: 300px;                   /* force square */
+  object-fit: cover;
+  border-radius: 50%;              /* perfect circle */
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 0 20px rgba(88, 166, 255, 0.5);
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .home-content {
+    flex-direction: column;        /* stack vertically */
+    padding: 20px 5%;
+    margin-top: 0px;
+    gap: 20px;
+  }
+
+  .home-content .left {
+    padding-left: 0;
+    margin: 0;
+    text-align: center;            /* center text if you like */
+  }
+
+  .home-content .right {
+    padding: 0;
+    margin: 0;
+  }
+
+  .profile-pic {
+    width: 100%;
+    max-width: 250px;
+    height: auto;                  /* natural height */
+    margin: 0 auto;
+    border-radius: 50px;
+  }
+}
+
+
+@media (min-width: 769px) and (max-width: 1400px) {
+  .home-content .left {
+    padding-left: 100px;
+  }
+  .home-content .right {
+    padding-right: 100px;
+  }
+  .profile-pic {
+    width: 220px;
+    height: 220px;
+  }
+}
+
+
+
+
+
+
+
+@media (min-width: 769px) and (max-width: 1400px) {
+  .nav-links {
+    flex-wrap: wrap;       /* allow wrapping to second line if needed */
+    gap: 15px;              /* reduce spacing between links */
+    justify-content: center;/* center align if wrapped */
+  }
+  .nav-links li a {
+    font-size: 0.9rem;      /* slightly smaller font */
+    padding: 5px 8px;       /* reduce button padding */
+  }
+}
+
+/* Hide if screen width is less than 1203px OR height is less than 683px */
+@media (max-width: 1337px), (max-height: 683px) {
+  .app-launcher {
+    display: none !important;
+  }
+}
+
+.logo img {
+  height: 40px; /* adjust to match your navbar height */
+  width: auto; /* keeps the aspect ratio */
+}
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+  #skills {
+    margin-top: -100px
+  }
+}
+
+@media (max-width: 768px) {
+  .about-section {
+    margin-top: 0.5px
+  }
+}
+
+@media screen and (max-width: 430px) { 
+  #skills {
+    margin-top: -150px
+  }
+}
+    
+</style
+
+
+</head>
+
+<body>
+   <div class="container">
+
+  <canvas id="stars"></canvas>
+
+  <!-- Header / Home Section -->
+  <section id="home" class="section home">
+    <nav class="navbar" id="navbar">
+      <div class="nav-container">
+        <div class="logo">
+  <a href="index.html"><img src="logoooo.png" alt="My Logo"></a>
+</div>
+
+        <ul class="nav-links" id="loggedInFeatures">
+  <li><a href="#home" class="nav-btn">Home</a></li>
+  <li><a href="#about" class="nav-btn">About</a></li>
+  <li><a href="#skills" class="nav-btn">Skills</a></li>
+  <li><a href="#certificates" class="nav-btn">Certificates</a></li>
+  <li><a href="#education" class="nav-btn">Education</a></li>
+  <li><a href="#leetcode" class="nav-btn">Leetcode</a></li>
+  <li><a href="free_certificate.html" class="nav-btn blink-new">Free Certificates<sup>NEW</sup></a></li>
+  <li><a href="roadmaps.html" class="nav-btn blink-new">Roadmaps<sup>NEW</sup></a></li>
+  <li><a href="resources.html" class="nav-btn blink-new">Resources<sup>NEW</sup></a></li>
+  <li><a href="#" class="button logout-btn">Logout</a></li>
+</ul>
+        <div class="actions">
+  <!-- 🟦 App Launcher Icon (Google-style) -->
+  
+<div class="app-launcher" onclick="toggleAppMenu()" title="My Apps">
+  <span id="app-icon"><i class="fas fa-th grid-icon"></i></span>
+  <span id="app-text" style="display:none; font-weight:bold; color:#ffcc00;">New Apps</span>
+
+  <div id="appMenu" class="app-dropdown hidden">
+    <a href="resume-builder.html">🧾 Resume Builder</a>
+    <a href="https://github.com/arunrathi153/hirewise">🎓 Hirewise </a>
+    <a href="roadmaps.html">🗺️ Roadmaps</a>
+  </div>
+  </div>
+
+  <div class="hamburger" id="hamburger">☰</div>
+</div>
+          
+        </div>
+      </div>  
+    </nav>    
+
+
+    <!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <ul class="mobile-nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#certificates">Certificates</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#leetcode">Leetcode</a></li>
+    <li><a href="#github">GitHub</a></li>
+    <li><a href="free_certificate.html" class="nav-btn blink-new">Free Certificates<sup>NEW</sup></a></li>
+  <li><a href="roadmaps.html" class="nav-btn blink-new">Roadmaps<sup>NEW</sup></a></li>
+  <li><a href="resources.html" class="nav-btn blink-new">Resources<sup>NEW</sup></a></li>
+    <a href="#" class="button logout-btn blue-logout">Logout</a>
+
+  </ul>
+</div>
+
+
+
+    <div class="home-content">
+      <div class="left">
+        <div class="greeting">
+  <span>Hey! </span>
+  <span class="wave">👋</span>
+  <span> I'm</span>
+
+        </div>
+        <h1 class="name">Arun Rathi</h1>
+        <h3 class="typing-text">I'm a <span id="changing-text"></span></h3>
+        <p class="contact">📞 +91 8571976063</p>
+        <p class="contact">📧 arunrathi153@gmail.com</p>
+        <p class="contact">📍 Gurgaon, India</p>
+
+               
+
+        
+        
+        
+        <ul class="example-2">
+  <li class="icon-content">
+    <a
+      data-social="whatsapp"
+      aria-label="Whatsapp"
+      href="http://wa.me/+918571976063"
+    >
+      <div class="filled"></div>
+      <svg
+        xml:space="preserve"
+        viewBox="0 0 24 24"
+        class="bi bi-whatsapp"
+        fill="currentColor"
+        height="24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill="currentColor"
+          d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
+        ></path>
+      </svg>
+    </a>
+    <div class="tooltip">Whatsapp</div>
+  </li>
+  
+  <li class="icon-content">
+    <a
+      data-social="instagram"
+      aria-label="Instagram"
+      href="https://www.instagram.com/mntl.jaat36?igsh=MTk2cWhsbTVxY2lmbA=="
+    >
+      <div class="filled"></div>
+      <svg
+        xml:space="preserve"
+        viewBox="0 0 16 16"
+        class="bi bi-instagram"
+        fill="currentColor"
+        height="16"
+        width="16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill="currentColor"
+          d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"
+        ></path>
+      </svg>
+    </a>
+    <div class="tooltip">Instagram</div>
+  </li>
+
+  <li class="icon-content">
+    <a
+      href="https://www.linkedin.com/in/arunrathi153
+
+      aria-label="LinkedIn"
+      data-social="linkedin"
+    >
+      <div class="filled"></div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        fill="currentColor"
+        class="bi bi-linkedin"
+        viewBox="0 0 16 16"
+        xml:space="preserve"
+      >
+        <path
+          d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"
+          fill="currentColor"
+        ></path>
+      </svg>
+    </a>
+    <div class="tooltip">LinkedIn</div>
+  </li>
+
+  <li class="icon-content">
+    <a href="http://github.com/arunrathi153" aria-label="GitHub" data-social="github">
+      <div class="filled"></div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="bi bi-github"
+        viewBox="0 0 16 16"
+        xml:space="preserve"
+      >
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"
+          fill="currentColor"
+        ></path>
+      </svg>
+    </a>
+    <div class="tooltip">GitHub</div>
+  </li>
+</ul>
+
+<br>
+
+<a href="Arun_Rathi_Resume.pdf" download class="resume-btn" id="resumeBtn">
+  <span id="resumeText">Download Resume</span>
+</a>
+
+
+
+
+
+        <br><br><br><br>
+
+       
+      </div>
+
+      <div class="right">
+        
+        
+        
+          <img src="image_with_shape.JPEG" alt="Arun Rathi" class="profile-pic" />
+        
+      </div>
+
+    </div>
+  </section>
+
+
+
+
+
+  <!-- About Section -->
+  <section id="about" class="about-section">
+  <div class="about-container">
+    <h2 class="about-title"> About Me</h2>
+
+    <p class="about-intro">"Web development? That’s my warm-up. I thrive on solving DSA challenges and diving deep into the world of AI and ML models.".</p>
+
+    <p class="about-details">
+      Hey! 👋  I’m <span style="color: #4dff00;">Arun</span>, a B.Tech Computer Science Engineering student specializing in Artificial Intelligence and Machine Learning.
+
+I'm deeply passionate about building real-world projects, solving complex problems, and continuously exploring new technologies.
+
+With hands-on experience in Data Structures & Algorithms (DSA), I’ve developed strong problem-solving skills and built intelligent solutions using Python, core AI/ML models, and popular Python libraries.
+
+I'm always eager to learn more about AI and implement it creatively in my projects. Whether it’s automating tasks, analyzing data, or building smart systems, I love turning ideas into real, working products.
+
+ Currently sharpening my skills in DSA, AI/ML, and full-stack development.
+    </p>
+
+
+  </div>
+  </section>
+
+
+
+  <!-- Skills Section -->
+
+
+<!-- Skills Section -->
+<section id="skills">
+  <h2>Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-icon">
+      <img src="images/html.png" alt="HTML">
+      <div class="tooltip">HTML</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/css.png" alt="CSS">
+      <div class="tooltip">CSS</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/javascript.png" alt="JavaScript">
+      <div class="tooltip">JavaScript</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/c.png" alt="C">
+      <div class="tooltip">C</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/vs code.png" alt="VS Code">
+      <div class="tooltip">VS Code</div>
+    </div>
+
+    <div class="skill-icon">
+      <img src="images/python.png" alt="Python">
+      <div class="tooltip">Python</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/java.png" alt="Java">
+      <div class="tooltip">Java</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/git.png" alt="Git">
+      <div class="tooltip">Git</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/github.png" alt="GitHub">
+      <div class="tooltip">GitHub</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/firebase.png" alt="Firebase">
+      <div class="tooltip">Firebase</div>
+    </div>
+
+    <div class="skill-icon">
+      <img src="images/tailwind-css.png" alt="Tailwind CSS">
+      <div class="tooltip">Tailwind CSS</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/typescript.png" alt="TypeScript">
+      <div class="tooltip">TypeScript</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/pycharm.png" alt="PyCharm">
+      <div class="tooltip">PyCharm</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/mysql.png" alt="MySQL">
+      <div class="tooltip">MySQL</div>
+    </div>
+    <div class="skill-icon">
+      <img src="images/c++.png" alt="C++">
+      <div class="tooltip">C++</div>
+    </div>
+  </div>
+</section>
+
+<!--  Experience Sectionn -->
+<section class="experience-section" id="experience">
+  <h2>Experience</h2>
+  <div class="timeline">
+
+    <!--<div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h3 class="role"> Software Developer Intern</h3>
+        <span class="company">Kretivan technologies (on-site)</span>
+        <span class="duration">Aug 2025 - current</span>
+        <p>
+           Optimized backend logic and debugged performance issues in collaboration with developers.
+        </p>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">Frontend</span>
+          <span class="tag">Backend</span>
+          <span class="tag">API's</span>
+          <span class="tag">MYSQL</span>
+        </div>
+      </div>
+    </div>-->
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h3 class="role"> Artificial Intelligence Intern</h3>
+        <span class="company">IBM (Remote)</span>
+        <span class="duration">July 2025 - Aug 2025</span>
+        <p>
+           Worked on AI-based solutions using Python and IBM Cloud tools to solve real-world business problems
+        </p>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">NLP</span>
+          <span class="tag">Cloud tools</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h3 class="role">Freelance Web Dev</h3>
+        <span class="company">Self-employed</span>
+        <span class="duration">Aug 2024 - July 2025</span>
+        <p>
+          Created responsive websites for clients with modern UI/UX principles.  
+          Focused on speed and mobile-friendliness.
+        </p>
+        <div class="tags">
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">React.js</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">API's</span>
+          <span class="tag">Firebase</span>
+          <span class="tag">SQL</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+ <!-- Certificates Section -->
+<section id="certificates" class="certificates-section">
+  <h2>Certificates</h2>
+  <div class="certificate-slider">
+
+    <div class="certificate-slide active">
+      <a href="#" target="_blank">
+        <img src="images/coding blocks.png" alt="Coding Blocks ">
+      </a>
+    </div>
+
+    <div class="certificate-slide">
+      <a href="#" target="_blank">
+        <img src="images/deloitte_certificate.png" alt="Deloitte Certificate">
+      </a>
+    </div>
+
+    <div class="certificate-slide">
+      <a href="#" target="_blank">
+        <img src="images/sql_certificate.png" alt="SQL Certificate">
+      </a>
+    </div>
+
+    <div class="certificate-slide">
+      <a href="#" target="_blank">
+        <img src="images/powerbi_certificate.png" alt="Power BI Certificate">
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+  <!-- Education Section -->
+  <section id="education" class="section education">
+    <h2>Education</h2>
+    <div class="edu-entry fade-in">
+      <h3>B.Tech in CSE (AI & ML)</h3>
+      <p>MDU University, 2022–2026 | Score: 8 cgpa +</p>
+    </div>
+    <div class="edu-entry fade-in">
+      <h3>Senior Secondary (XII)</h3>
+      <p>RC Green Field School, 2021–2022 | Score: 74.4%</p>
+    </div>
+    <div class="edu-entry fade-in">
+      <h3>Secondary (X)</h3>
+      <p>RC Green Field School, 2019–2020 | Score: 78.2%</p>
+    </div>
+  </section>
+
+  <!-- Leetcode Section -->
+<section id="leetcode" class="section leetcode-section">
+  <h2>LeetCode</h2>
+  
+  <div class="leetcode-card" style="text-align: center;">
+    <a href="https://leetcode.com/Arun-Rathi" target="_blank">
+      <!-- Dynamic LeetCode Card -->
+      <img src="https://leetcard.jacoblin.cool/Arun-Rathi?theme=dark&ext=heatmap&hide=ranking,contest" 
+     alt="LeetCode Stats" 
+     class="leetcode-avatar" 
+     style="border-radius:12px; box-shadow:0 0 15px rgba(0,255,150,0.5);" />
+
+    </a> <br>
+
+    <p class="leetcode-info"> I’ve solved 50+ DSA problems on LeetCode and earned multiple badges.
+      <br> My journey reflects consistency, passion, and problem-solving growth.
+      <br> Always eager to take on new coding challenges!
+    </p> <br><br>
+
+    <a href="https://leetcode.com/Arun-Rathi" class="leetcode-link" target="_blank">
+      🔗 Click here to visit my LeetCode Profile
+    </a>
+  </div>
+</section>
+
+<br><br><br><br><br><br>
+
+
+
+  <!-- GitHub Section -->
+  <section id="github" class="github-section">
+  <h2>GitHub</h2>
+  <div class="github-grid">
+    <div class="github-card" data-hovertext="• Developed a real-time face recognition attendance system using Python and OpenCV. 
+• Implemented facial encoding and recognition with face_recognition for accurate identity matching. 
+• Designed a dynamic UI using cvzone to display live feedback, status, and attendance logs. 
+• Optimized frame processing and color conversion to enhance system speed and compatibility.">
+      <a href="http://github.com/Arun-Rathi" target="_blank" class="github-title">AI Smart Attendance System</a>
+      <p class="github-description">  Developed a real-time face recognition attendance system..<br><span style="color: #4dff00;">( Hover For Details )</span></p>
+      <div class="github-meta">
+        <span>Python</span>
+        <div class="stats">
+          ⭐⭐⭐
+        </div>
+      </div>
+    </div>
+
+    
+
+    <div class="github-card" data-hovertext="Built a modern, responsive personal portfolio using HTML, CSS, JavaScript, and Tailwind CSS to showcase technical expertise and achievements.
+
+🧠 Demonstrates proficiency in front-end development, UI/UX design, and responsive layouts with real-time project highlights.
+
+💻 Integrated tools like React.js, VS Code, GitHub, and animations to create a dynamic, professional portfolio environment.
+
+🛠️ Designed to reflect strong understanding of core web technologies, DSA problem-solving, and foundational AI/ML concepts.
+
+📌 Portfolio reflects hands-on skills in version control (Git/GitHub), code editors (VS Code, PyCharm), and structured project presentation.">
+      <a href="https://.com" target="_blank" class="github-title">Created A Modern Portfolio</a>
+      <p class="github-description"><span style="color: #4dff00;">( Hover For Details )</span></p>
+      <div class="github-meta">
+        <span>JavaScript</span>
+        <div class="stats">
+          ⭐⭐⭐
+        </div>
+      </div>
+    </div>
+
+    <div class="github-card" data-hovertext="• Built a feature-rich resume builder with live preview and 3 professional templates (Classic, Modern, Minimal).
+- Integrated AI-powered summary enhancement using Claude (Anthropic API).
+- Implemented real-time ATS scoring meter with actionable improvement tips.
+- Added Firebase Authentication for secure login/signup before resume download.
+- Supports profile photo upload, accent color picker, LinkedIn/GitHub links and PDF export.">
+      <a href="https://arunrathi153.github.io/resume-builder" target="_blank" class="github-title">Resume Builder Pro</a>
+      <p class="github-description">AI-powered resume builder with ATS scoring & templates.<br><span style="color: #4dff00;">( Hover For Details )</span></p>
+      <div class="github-meta">
+        <span>JavaScript</span>
+        <div class="stats">
+          ⭐⭐⭐
+        </div>
+      </div>
+    </div>
+  </div> <br><br>
+  <p class="github-info-text">
+  These are some of my featured projects — click on any project card to explore more details including what the project is about, its key features, and the complete source code.
+</p>
+
+<a href="http://github.com/arunrathi153" target="_blank" class="github-button">
+  🚀 Click here to visit my GitHub Profile
+</a>
+
+</section>
+
+<br><br><br><br><br><br>
+
+
+<!--                                       get in touch                                  -->
+
+
+<section class="contact-section">
+  <div class="contact-container">
+
+    <!-- Contact Info Block -->
+    <div class="contact-info glass-card">
+      <h2 class="glow-heading">Get In Touch</h2>
+      <p><p>
+  👋 Hey there! Have a question, idea, or opportunity?</p>
+  <p>Just drop your name, email, and message — I usually respond within 24 hours.
+</p>
+<p>
+  Whether it’s a project, collaboration, or just a quick tech doubt — feel free to reach out. I’d love to hear from you!
+</p>
+</p>
+     
+    </div>
+
+    <!-- Contact Form Block -->
+    <form class="contact-form glass-card" id="contactForm">
+  <input type="text" id="contactName" placeholder="Your Name" required />
+  <input type="email" id="contactEmail" placeholder="Your Email" required />
+  <textarea id="contactMessage" placeholder="Your Message" required></textarea>
+  <button type="submit">Send Message</button>
+</form>
+
+
+  </div>
+</section>
+   </div>
+
+
+<!--                                          footer                             -->
+
+<footer class="footer">
+  <div class="footer-nav">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#certificates">Certificates</a>
+    <a href="#education">Education</a>
+    <a href="#leetcode">Leetcode</a>
+    <a href="#github">GitHub</a>
+  </div>
+
+  <div class="footer-socials">
+    <a href="http://github.com/arunrathi153"><i class="fab fa-github"></i></a>
+    <a href="https://www.linkedin.com/in/arunrathi153"><i class="fab fa-linkedin-in"></i></a>
+    <a href="https://www.instagram.com/mntl.jaat36?igsh=MTk2cWhsbTVxY2lmbA=="><i class="fab fa-instagram"></i></a>
+    <a href="http://wa.me/+918571976063"><i class="fab fa-whatsapp"></i></a>
+    <a href="#"><i class="fab fa-x-twitter"></i></a>
+  </div>
+
+  <p class="footer-text">
+    © 2025 Arun Rathi. All rights reserved. <br />
+    
+  </p>
+
+  <div class="orbital-spinner"></div>
+
+
+
+</footer>
+
+<!--                                      login/signin                              -->
+
+
+
+<!--  Google Login Modal -->
+<div id="authModal" class="hidden">
+    <div class="auth-container">
+      <h2 id="modalTitle">Login</h2>
+
+      <input type="email" id="emailInput" placeholder="Email" required />
+
+<!-- Show only in Sign Up -->
+<div id="phoneField" class="hidden">
+  <input type="tel" id="phoneInput" placeholder="Phone Number (10 digits)" pattern="[0-9]{10}" />
+</div>
+
+<div id="signupPasswords" class="hidden">
+  <input type="password" id="createPassword" placeholder="Create Password" />
+  <input type="password" id="confirmPassword" placeholder="Re-enter Password" />
+</div>
+
+<!-- Only in Login -->
+<input type="password" id="passwordInput" placeholder="Password" />
+
+
+      <button id="submitBtn">Login</button>
+      <p class="toggle">Don't have an account? <span id="toggleMode">Sign Up</span></p>
+
+      <div class="separator">or</div>
+
+      <button class="btn google" disabled>🔒 Continue with Google (Disabled)</button>
+    </div>
+  </div>
+
+
+
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+
+<script src="script.js"></script>
+
+   
+
+</body>
+</html>
+
+
+
+

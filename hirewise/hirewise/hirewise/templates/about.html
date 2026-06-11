@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About HireWise</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .navbar img {
+            height: 60px;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+        .back-btn {
+            padding: 8px 18px;
+            background-color: #ff69b4;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .back-btn:hover {
+            background-color: #e05599;
+            transform: scale(1.05);
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 50px 20px;
+            text-align: center;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+        .about-section h1 {
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .highlight {
+            color: #ff69b4;
+        }
+        .about-section p {
+            max-width: 900px;
+            margin: 15px auto;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        /* Features */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 50px;
+            gap: 20px;
+        }
+        .feature-card {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 12px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+            animation: fadeIn 1.5s ease-in-out;
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+        }
+        .feature-card h3 {
+            color: #ff69b4;
+            margin-bottom: 10px;
+        }
+        .feature-card p {
+            font-size: 1em;
+            color: #555;
+        }
+
+        /* CTA */
+        .cta {
+            background: linear-gradient(45deg, #ff69b4, #ff85c1);
+            padding: 50px 20px;
+            color: white;
+            text-align: center;
+            margin-top: 60px;
+            animation: fadeIn 1.8s ease-in-out;
+        }
+        .cta h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        .cta button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border: none;
+            background: white;
+            color: #ff69b4;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .cta button:hover {
+            background: #ffe4ef;
+            transform: scale(1.05);
+        }
+
+        .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    animation: fadeIn 1.2s ease-in-out;
+}
+
+.header img {
+    height: 40px;
+    animation: pulse 2s infinite;
+}
+
+.back-btn {
+    padding: 6px 12px;
+    font-size: 1em;
+    border: none;
+    background: #ff69b4;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+.back-btn:hover {
+    background: #ff85c1;
+    transform: scale(1.05);
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #fff; /* Matches site background or can use #f9f9f9 */
+    border-bottom: 2px solid #eee; /* Thin divider line */
+    animation: fadeIn 1.2s ease-in-out;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="header">
+    <button class="back-btn" onclick="history.back()">⬅ Back</button>
+    <img src="{{ url_for('static', filename='images/crop_logo_circle_crop.png') }}" alt="HireWise Logo">
+
+</div>
+
+
+    <!-- About Section -->
+    <section class="about-section">
+        <h1>About <span class="highlight">HireWise</span></h1>
+        <p>
+            <span class="highlight">HireWise</span> is your AI-powered hiring assistant, 
+            built to help HR teams and recruiters shortlist the best students and job candidates 
+            with unmatched precision.
+        </p>
+        <p>
+            Our advanced algorithms analyze skills, qualifications, and relevant experience 
+            so you can focus only on top talent, cutting your hiring time dramatically.
+        </p>
+        <p>
+            Whether you’re a small business seeking fresh graduates or a large enterprise hiring at scale, 
+            <span class="highlight">HireWise</span> ensures your hiring process is faster, smarter, and more efficient.
+        </p>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="feature-card">
+            <h3>AI-Powered Matching</h3>
+            <p>Automatically match candidates with your job requirements in seconds.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Save Time</h3>
+            <p>Cut down hours of resume screening into a few clicks.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Accurate Shortlisting</h3>
+            <p>Focus on the most relevant candidates for your roles.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Scalable for All</h3>
+            <p>From startups to enterprises, HireWise works for every hiring need.</p>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta">
+        <h2>Ready to Hire Smarter?</h2>
+        <p>Join the hundreds of recruiters already using HireWise to transform their hiring process.</p>
+        <button>Get Started</button>
+    </section>
+
+</body>
+</html>

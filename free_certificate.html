@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Free Certificates</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f172a;
+      color: white;
+    }
+
+    /* 🔷 Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1f2937;
+      padding: 16px 24px;
+      border-bottom: 2px solid #334155;
+      transition: border-radius 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    footer a:hover {
+    color: #3b82f6;
+    transition: color 0.3s ease;
+  }
+
+    /* Curved only after scroll */
+    .navbar.scrolled {
+  padding: 8px 20px;
+  height: 50px;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+    .navbar button {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navbar.scrolled button {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+}
+
+
+    .navbar button {
+      padding: 8px 16px;
+      background-color: #ef4444;
+      border: none;
+      color: white;
+      font-size: 0.95rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .navbar button:hover {
+      background-color: #dc2626;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+
+    /* 🔳 Certificate Grid */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 🔁 3 cards per row */
+      gap: 30px;
+      padding: 50px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .cert-card {
+      background-color: #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      text-align: center;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      position: relative;
+      box-shadow: 0 0 0 transparent;
+    }
+
+    .cert-card:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.6);
+      animation: blinkBorder 1s infinite alternate;
+    }
+
+    @keyframes blinkBorder {
+      from { box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+      to   { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
+    }
+
+    .cert-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .cert-title {
+      margin: 16px 0 6px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #93c5fd;
+    }
+
+    .cert-desc {
+      font-size: 0.9rem;
+      color: #d1d5db;
+      padding: 0 14px 16px;
+    }
+
+    @media (max-width: 1024px) {
+      .cert-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .cert-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 🔠 Certificate Header Styles */
+.cert-heading {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  animation: fadeSlideDown 1.5s ease-out;
+}
+
+.cert-heading h1 {
+  font-size: 2.8rem;
+  color: #60a5fa;
+  text-shadow: 0 0 12px rgba(96, 165, 250, 0.5);
+  margin-bottom: 10px;
+}
+
+.cert-heading p {
+  font-size: 1rem;
+  color: #cbd5e1;
+  margin: 6px 0;
+  line-height: 1.4;
+}
+
+/* 🎞️ Animation */
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+footer a {
+  transition: color 0.3s ease;
+}
+footer a:hover {
+  color: #3b82f6;
+}
+
+
+.navbar-links {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-left: 20px;
+  flex-wrap: wrap;
+}
+
+.nav-item {
+  position: relative;
+}
+
+.nav-item a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s ease;
+  padding-right: 24px;
+  display: inline-block;
+}
+
+.nav-item a:hover {
+  color: #60a5fa; /* blue on hover */
+}
+
+.coming-soon-tag {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  transform: rotate(15deg);
+  font-size: 0.6rem;
+  color: #facc15;
+  font-weight: bold;
+  animation: blinkText 1s infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes blinkText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.hamburger {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  background-color: #1f2937;
+  padding: 16px;
+}
+
+.mobile-menu.active {
+  display: flex;
+}
+
+.mobile-menu a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 0;
+  border-bottom: 1px solid #334155;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none;
+  }
+  .hamburger {
+    display: block;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .mobile-menu .coming-soon-tag {
+    position: static;
+    transform: none;
+    display: inline;
+    font-size: 0.7rem;
+    color: #facc15;
+    font-weight: bold;
+    margin-left: 6px;
+    animation: blinkText 1s infinite alternate;
+  }
+}
+
+
+
+
+
+
+  </style>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+</head>
+<body>
+
+  <!-- 🔙 Navbar -->
+  <div class="navbar" id="mainNavbar">
+  <button onclick="history.back()">← Back</button>
+
+  <div class="hamburger" id="hamburger">&#9776;</div>
+
+  <div class="navbar-links">
+    <div class="nav-item"><a href="#">IIT Certificates <span class="coming-soon-tag">Soon</span></a></div>
+    <div class="nav-item"><a href="#">Free Internships <span class="coming-soon-tag">Soon</span></a></div>
+    <div class="nav-item"><a href="#">Project Ideas <span class="coming-soon-tag">Soon</span></a></div>
+    <div class="nav-item"><a href="#">Job Alerts <span class="coming-soon-tag">Soon</span></a></div>
+  </div>
+</div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#">
+    IIT Certificates <span class="coming-soon-tag">Soon</span>
+  </a>
+  <a href="#">
+    Free Internships <span class="coming-soon-tag">Soon</span>
+  </a>
+  <a href="#">
+    Project Ideas <span class="coming-soon-tag">Soon</span>
+  </a>
+  <a href="#">
+    Job Alerts <span class="coming-soon-tag">Soon</span>
+  </a>
+</div>
+
+
+
+
+
+
+
+<!-- 🔠 Heading Section -->
+<div class="cert-heading">
+  <h1>Certificates</h1>
+  <p>Explore verified free certification programs offered by top platforms.</p>
+  <p>Boost your resume with valuable knowledge across tech, business, and more.</p>
+</div>
+
+<!-- 🧾 Certificate Cards -->
+<div class="cert-grid">
+
+  <a href="https://www.theforage.com/" target="_blank" style="text-decoration: none;">
+    <div class="cert-card">
+      <img src="images/deloitte_certificate.png" alt="Deloitte Data Analytics Certificate">
+      <div class="cert-title">Deloitte</div>
+      <div class="cert-desc">
+        Data Analytics Job Simulation – Certificate of Completion (Forage)
+      </div>
+    </div>
+  </a>
+
+  <a href="https://www.skillcourse.in" target="_blank" style="text-decoration: none;">
+    <div class="cert-card">
+      <img src="images/powerbi_certificate.png" alt="Power BI Micro Course Certificate">
+      <div class="cert-title">Skill Course</div>
+      <div class="cert-desc">
+        Power BI Micro Course – Certificate of Completion
+      </div>
+    </div>
+  </a>
+
+</div>
+
+
+  <!-- 🌐 Footer Section -->
+<!-- 🌐 Footer with Line and Icons -->
+<div style="border-top: 2px solid #0ea5e9; box-shadow: 0 -2px 10px rgba(14, 165, 233, 0.6);"></div>
+
+<footer style="text-align: center; padding: 40px 20px 20px; background-color: #0f172a;">
+  <div style="margin-top: 20px; display: flex; justify-content: center; gap: 20px; font-size: 24px;">
+    <a href="http://github.com/arunrathi153" style="color: white;" target="_blank"><i class="fab fa-github"></i></a>
+    <a href="https://www.linkedin.com/in/arun-rathi-70442326b" style="color: white;" target="_blank"><i class="fab fa-linkedin"></i></a>
+    <a href="https://www.instagram.com/mntl.jaat36?igsh=MTk2cWhsbTVxY2lmbA==" style="color: white;" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="http://wa.me/+918571976063" style="color: white;" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    
+  </div>
+  <p style="margin-top: 20px; font-size: 0.9rem; color: #cbd5e1;">© 2025 Arun Rathi. All rights reserved.</p>
+</footer>
+
+
+
+  <!-- JS for Scroll Navbar Curve -->
+  <script>
+  const navbar = document.getElementById('mainNavbar');
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  // ✅ Fix: Move click listener outside scroll
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('active');
+  });
+
+  // Scroll behavior
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+</script>
+
+
+</body>
+</html>
